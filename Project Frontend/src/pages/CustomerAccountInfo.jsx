@@ -3,6 +3,7 @@ import { Tabs } from "antd";
 // import "antd/dist/antd.css"; // Import Ant Design styles
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserDetails, updateUserPassword } from "@/features/UserSlice";
+import { ToastContainer, toast } from "react-toastify";
 
 const { TabPane } = Tabs;
 
@@ -55,7 +56,7 @@ const CustomerAccountInfo = () => {
     setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
   };
 
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
 
     const newUpdatedUser = {
@@ -68,7 +69,29 @@ const CustomerAccountInfo = () => {
       },
     };
 
-    dispatch(updateUserDetails(newUpdatedUser));
+    let response = await dispatch(updateUserDetails(newUpdatedUser));
+
+    if (response.meta.requestStatus === "fulfilled") {
+      toast.success("Changes has been saved successfully!", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error(response.payload.error, {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const onChangePasswordUser = (e) => {
@@ -78,21 +101,75 @@ const CustomerAccountInfo = () => {
     });
   };
 
-  const handleSubmitPassword = (e) => {
+  const handleSubmitPassword = async (e) => {
     e.preventDefault();
 
     console.log("The passwords are: ", updatePasswordUser);
     if (
       updatePasswordUser.new_password === updatePasswordUser.reenter_password
     ) {
-      dispatch(updateUserPassword(updatePasswordUser));
+      let response = await dispatch(updateUserPassword(updatePasswordUser));
+
+      if (response.payload.message === "Previous password is incorrect.") {
+        toast.error("Current password is incorrect", {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        if (response.meta.requestStatus === "fulfilled") {
+          toast.success("Password updated successfully!", {
+            position: "top-left",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          toast.error(response.payload.error, {
+            position: "top-left",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      }
     } else {
-      alert("Your new password and confirm password must be same.");
+      toast.error("Your new password and confirm password must be same", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   return (
     <>
+      <ToastContainer
+        position="top-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="sm:mx-[5%] md:mx-[10%] lg:mx-[15%] xl:mx-[18%] p-10 bg-white shadow-lg rounded-lg shadow-violet-300">
         <h1 className="text-2xl sm:text-3xl text-violet-600 font-bold mb-4 text-center">
           Account Settings

@@ -3,8 +3,9 @@ import Chart1 from "./Chart1";
 import Chart2 from "./Chart2";
 import VerticalUrduKanban from "@/components/VerticalUrduKanban";
 import ChannelWiseTopics from "@/components/ChannelWiseTopics";
+import ChannelWiseMostTrendingTopics from "@/components/ChannelWiseMostTrendingTopics";
 
-const Charts = () => {
+const Charts = ({ formData }) => {
   const [analyticType, setAnalyticType] = useState("");
 
   const handleAnalytic = (e) => {
@@ -43,6 +44,7 @@ const Charts = () => {
               <option value="MostTrending">Highest Trends</option>
               <option value="MonthWiseTrendsInsights">Month Wise Trends Insights</option>
               <option value="ChannelWiseTrends">Channel Wise Trends</option>
+              <option value="ChannelSpecificHighestTrends">Channel Specific Highest Trends</option>
             </select>
           </div>
         </section>
@@ -54,6 +56,8 @@ const Charts = () => {
         {analyticType === "MonthWiseTrendsInsights" && <VerticalUrduKanban />}
 
         {analyticType === "ChannelWiseTrends" && <ChannelWiseTopics />}
+
+        {analyticType === "ChannelSpecificHighestTrends" && <ChannelWiseMostTrendingTopics formData={formData} />}
 
         <section className="min-h-92 lg:h-[450px] xl:min-h-[500px] flex items-center justify-center mt-12 -mx-10 sm:mx-0 md:mx-[5%] lg:mx-[12%]">
           {/* <UrduBarGraph entity="عدلیہ" data={resultsJson} /> */}

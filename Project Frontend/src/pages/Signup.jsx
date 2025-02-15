@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerNewUser } from "@/features/UserSlice";
 import Logo from "../Images/Logo_purple_background.png";
+import { ToastContainer, toast } from "react-toastify";
 
 const Signup = () => {
   const [newUser, setNewUser] = useState({
@@ -27,19 +28,66 @@ const Signup = () => {
     setCPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (newUser.password == cPassword) {
+    if (newUser.password === cPassword) {
       console.log("The new user for registration is: ", newUser);
-      dispatch(registerNewUser({ data: newUser, navigate }));
+      let response = await dispatch(registerNewUser({ data: newUser }));
+      // if(response.payload.action === "success"){
+      if(response.meta.requestStatus === "fulfilled"){
+        toast.success("Account has been created successfully!", {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setTimeout(() => {
+          navigate('/')
+        }, 2000);
+      }
+      else{
+        toast.error(response.payload.error, {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      
     } else {
-      alert("Keep your password and confirm password same");
+      toast.error("Keep your password and confirm password same", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   return (
     <div>
+      <ToastContainer
+        position="top-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="flex">
         <div className="w-full px-10 sm:px-24 lg:w-[50%] py-20 xl:px-20 lg:px-16 md:w-[56%] md:px-8">
           <div className="flex justify-center">
@@ -200,16 +248,16 @@ const Signup = () => {
             </p>
           </div>
 
-          <div className="my-6 w-full flex items-center before:mt-0.5 before:flex-1 before:border-t-2 before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t-2 after:border-neutral-300 dark:before:border-neutral-500 dark:after:border-neutral-500">
+          {/* <div className="my-6 w-full flex items-center before:mt-0.5 before:flex-1 before:border-t-2 before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t-2 after:border-neutral-300 dark:before:border-neutral-500 dark:after:border-neutral-500">
             <a
               href="/"
               className="mx-4 mb-0 text-md md:text-[15px] text-gray-600 text-center font-semibold"
             >
               Or register with
             </a>
-          </div>
+          </div> */}
 
-          <button className="w-full sm:text-lg lg:text-xl py-3 md:py-2 gap-x-3 justify-center text-gray-800 bg-transparent transition-all duration-300 items-center text-[18px] font-medium inline-flex border border-gray-400 rounded-md hover:bg-gray-50 hover:border-gray-300">
+          {/* <button className="w-full sm:text-lg lg:text-xl py-3 md:py-2 gap-x-3 justify-center text-gray-800 bg-transparent transition-all duration-300 items-center text-[18px] font-medium inline-flex border border-gray-400 rounded-md hover:bg-gray-50 hover:border-gray-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
@@ -239,10 +287,10 @@ const Signup = () => {
               </g>
             </svg>
             <span className="">Sign Up with Google</span>
-          </button>
+          </button> */}
         </div>
         <div className="hidden md:block md:w-[44%] lg:w-[50%]">
-          <img src={loginImage} alt="" srcset="" className="w-full h-full" />
+          <img src={loginImage} alt="" srcSet="" className="w-full h-full" />
         </div>
       </div>
     </div>

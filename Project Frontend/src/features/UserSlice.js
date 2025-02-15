@@ -8,7 +8,7 @@ const initialState = {
 
 export const registerNewUser = createAsyncThunk(
   "registerNewUser",
-  async ({ data, navigate }, thunkAPI) => {
+  async ({ data }, thunkAPI) => {
     console.log("The data for body of request is: ", data);
     const res = await fetch("http://127.0.0.1:8000/register", {
       method: "POST",
@@ -23,7 +23,7 @@ export const registerNewUser = createAsyncThunk(
 
     if (res.ok) {
       console.log("The response is ok");
-      navigate("/");
+      // navigate("/");
     } else {
       return thunkAPI.rejectWithValue(response);
     }
@@ -36,7 +36,7 @@ export const registerNewUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "loginUser",
-  async ({ data, navigate }, thunkAPI) => {
+  async ({ data }, thunkAPI) => {
     console.log("The data for body of request is: ", data);
     const res = await fetch("http://127.0.0.1:8000/login", {
       method: "POST",
@@ -51,7 +51,7 @@ export const loginUser = createAsyncThunk(
 
     if (res.ok) {
       console.log("The response is ok");
-      navigate("/");
+      // navigate("/");
     } else {
       return thunkAPI.rejectWithValue(response);
     }

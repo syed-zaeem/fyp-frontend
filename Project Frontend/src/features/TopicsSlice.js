@@ -3,6 +3,8 @@ import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 const initialState = {
   trendingTopics: [],
   channelWiseTrendingTopics: [],
+  channels: [],
+  channelSpecificTrendingTopics: [],
   loading: false,
   error: null,
 };
@@ -57,6 +59,43 @@ export const getChannelWiseTrendingTopics = createAsyncThunk(
   }
 );
 
+export const getChannels = createAsyncThunk("topics/channels", async () => {
+  const res = await fetch("http://127.0.0.1:8000/get_all_channels", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const response = await res.json();
+
+  console.log(response);
+
+  return response;
+});
+
+export const getChannelSpecificMostTredingTopics = createAsyncThunk(
+  "topics/channelSpecificTrendingTopics",
+  async (data) => {
+    const res = await fetch(
+      "http://127.0.0.1:8000/channel_wise_entity",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const response = await res.json();
+
+    console.log(response);
+
+    return response;
+  }
+);
+
 export const TopicsSlice = createSlice({
   name: "trendingTopics",
   initialState: initialState,
@@ -89,7 +128,10 @@ export const TopicsSlice = createSlice({
         createAction(getChannelWiseTrendingTopics.fulfilled),
         (state, action) => {
           state.loading = false;
-          console.log("The channel wise trending topics payload is: " , action.payload)
+          console.log(
+            "The channel wise trending topics payload is: ",
+            action.payload
+          );
           state.channelWiseTrendingTopics = action.payload;
           // console.log("The topics slice is: " , state.trendingTopics[0].data.length)
           // localStorage.setItem("trendingTopics", JSON.stringify(action.payload)); // Save to localStorage
@@ -101,7 +143,38 @@ export const TopicsSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         }
-      );
+      )
+      .addCase(createAction(getChannels.pending), (state) => {
+        state.loading = true;
+      })
+      .addCase(createAction(getChannels.fulfilled), (state, action) => {
+        state.loading = false;
+        console.log(
+          "The action payload after getting all channels are: ",
+          action.payload.channels
+        );
+        state.channels = action.payload.channels;
+      })
+      .addCase(createAction(getChannels.rejected), (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createAction(getChannelSpecificMostTredingTopics.pending), (state) => {
+        state.loading = true;
+      })
+      .addCase(createAction(getChannelSpecificMostTredingTopics.fulfilled), (state, action) => {
+        state.loading = false;
+        console.log(
+          "The action payload after getting channel specific trending topics are: ",
+          action.payload
+        );
+        state.channelSpecificTrendingTopics = action.payload;
+      })
+      .addCase(createAction(getChannelSpecificMostTredingTopics.rejected), (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      ;
   },
 });
 

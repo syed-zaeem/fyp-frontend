@@ -124,9 +124,6 @@
 
 // export default ChannelWiseTopics;
 
-
-
-
 import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa"; // Import icon
 import { useSelector } from "react-redux";
@@ -158,8 +155,8 @@ const EntityChannelAccordion = () => {
       <h1 className="text-xl sm:text-2xl md:text-[22px] lg:text-2xl text-center font-semibold text-gray-800 mb-8">
         Select any Trend
       </h1>
-      {loading && <p className="text-blue-500">Loading...</p>}
-      {error && <p className="text-red-500 font-medium">Error: {error}</p>}
+      {/* {loading && <p className="text-blue-500">Loading...</p>}
+      {error && <p className="text-red-500 font-medium">Error: {error}</p>} */}
 
       {/* Radio Buttons for Entities */}
       <div
@@ -169,7 +166,7 @@ const EntityChannelAccordion = () => {
         {channelWiseTrendingTopics.map((entity, entityIndex) => (
           <label
             key={entityIndex}
-            className="flex w-[50%] sm:w-[33%] md:w-[25%] my-1 items-center gap-3 cursor-pointer text-gray-800 text-[17px] font-urdunormal hover:text-violet-600 transition duration-300"
+            className="flex w-[40%] sm:w-[33%] md:w-[25%] my-1 items-center gap-3 cursor-pointer text-gray-800 text-[17px] font-urdunormal hover:text-violet-600 transition duration-300"
           >
             <span
               className={`relative w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all duration-300 ${
@@ -305,7 +302,9 @@ const EntityChannelAccordion = () => {
             )
           )}
         </div>
-      ) : <h3 className="text-lg">No trend is selected</h3>}
+      ) : (
+        <h3 className="text-lg">No trend is selected</h3>
+      )}
     </section>
   );
 };
